@@ -12,15 +12,10 @@ const ALLOWED_ORIGINS = [
 ]
 
 const ALLOWED_CONTENT_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-  'application/pdf',
+  'multipart/form-data',
 ]
 
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024
-const MAX_PDF_SIZE = 20 * 1024 * 1024
+const MAX_BODY_SIZE = 20 * 1024 * 1024
 const RATE_LIMIT_WINDOW = 60 * 1000
 const RATE_LIMIT_MAX = 10
 
@@ -87,19 +82,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const contentType = req.headers['content-type'] || ''
   if (!ALLOWED_CONTENT_TYPES.some(t => contentType.includes(t))) {
-    return res.status(400).json({ error: 'Invalid file type. Only JPEG, PNG, WebP, and PDF are allowed.' })
+    return res.status(400).json({ error: 'Invalid request. Please upload a file.' })
   }
-
-  const isPdf = contentType.includes('application/pdf')
-  const maxSize = isPdf ? MAX_PDF_SIZE : MAX_IMAGE_SIZE
 
   const chunks: Buffer[] = []
   let totalSize = 0
   for await (const chunk of req) {
     const buf = typeof chunk === 'string' ? Buffer.from(chunk) : chunk
     totalSize += buf.length
-    if (totalSize > maxSize) {
-      return res.status(413).json({ error: `File too large. Max size is ${isPdf ? '20MB' : '10MB'}.` })
+    if (totalSize > MAX_BODY_SIZE) {
+      return res.status(413).json({ error: 'File too large. Max size is 20MB.' })
     }
     chunks.push(buf)
   }
