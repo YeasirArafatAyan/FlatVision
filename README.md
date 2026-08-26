@@ -14,7 +14,7 @@ The frontend runs on Vercel and connects to an external OCR engine for text extr
 
 ## Run it locally
 
-You need Node.js 18 or newer.
+You need Node.js 18 or newer. This repo is just the frontend UI. You will need your own OCR backend API to make it work.
 
 ```
 git clone https://github.com/YeasirArafatAyan/FlatVision.git
@@ -27,11 +27,7 @@ Open `http://localhost:3000` in your browser.
 
 ## Tech stack
 
-- Next.js 14
-- React 18
-- TypeScript
-- Tailwind CSS
-- Axios
+Next.js 14, React 18, TypeScript, Tailwind CSS, Axios
 
 ## License
 
